@@ -27,9 +27,9 @@ spec:
             - name: APP_ENV
               value: "prod"
             - name: APP_SECRET
-              value: "asdfasdfsdf"
+              value: {{ .Values.sulu.secret }}
             - name: SULU_ADMIN_EMAIL
-              value: "info@sulu.io"
+              value: {{ .Values.sulu.email }}
             - name: DATABASE_HOST
               value: {{ template "sulu-chart.mysql.fullname" . }}
             - name: DATABASE_PORT
@@ -39,10 +39,13 @@ spec:
             - name: DATABASE_USER
               value: {{ .Values.mysql.mysqlUser | quote }}
             - name: DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "sulu-chart.mysql.fullname" . }}
-                  key: mysql-password
+              value: {{ .Values.mysql.mysqlPassword | quote }}
+#              Secret will be recreated on upgrade
+#              https://github.com/helm/charts/issues/5167
+#              valueFrom:
+#                  secretKeyRef:
+#                      name: {{ template "sulu-chart.mysql.fullname" . }}
+#                      key: mysql-password
           ports:
             - name: http
               containerPort: 80

@@ -17,10 +17,18 @@ service:
   type: LoadBalancer
   port: 80
 
+sulu:
+  env: prod
+  email: info@example.com
+  secret: ThisSecretIsNoSoSecretAsItCould
+
 mysql:
   enabled: true
   imageTag: 5.7.19
   mysqlUser: sulu
+# Secret will be recreated on upgrade
+# https://github.com/helm/charts/issues/5167
+  mysqlPassword: sulu
   mysqlDatabase: sulu
   persistence:
     enabled: true
