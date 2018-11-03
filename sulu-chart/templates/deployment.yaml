@@ -23,6 +23,13 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: uploads
+              mountPath: /var/www/html/var/uploads
+              subPath: var/uploads
+            - name: uploads
+              mountPath: /var/www/html/public/uploads
+              subPath: public/uploads
           env:
             - name: APP_ENV
               value: "prod"
@@ -60,6 +67,14 @@ spec:
               port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: uploads
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "sulu-chart.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end -}}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
