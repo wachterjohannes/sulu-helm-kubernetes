@@ -1,0 +1,6 @@
+.git
+.env
+vendor
+public/admin
+node_modules
+tests
