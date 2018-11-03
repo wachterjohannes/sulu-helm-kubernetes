@@ -1,0 +1,25 @@
+snc_redis:
+    clients:
+        session:
+            type: predis
+            alias: session
+            dsn: 'redis://%env(resolve:REDIS_PASSWORD)%@%env(resolve:REDIS_HOST)%/1'
+        cache:
+            type: predis
+            alias: cache
+            dsn: 'redis://%env(resolve:REDIS_PASSWORD)%@%env(resolve:REDIS_HOST)%/2'
+    session:
+        client: session
+    doctrine:
+        metadata_cache:
+            client: cache
+            entity_manager: default
+        result_cache:
+            client: cache
+            entity_manager: default
+        query_cache:
+            client: cache
+            entity_manager: default
+        second_level_cache:
+            client: cache
+            entity_manager: default

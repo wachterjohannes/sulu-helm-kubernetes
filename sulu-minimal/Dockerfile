@@ -11,7 +11,7 @@ WORKDIR /var/www/html
 
 COPY package.json /var/www/html/
 
-COPY --from=composer /var/www/html/vendor/ /var/www/html/vendor/
+COPY --from=composer /var/www/html/vendor/sulu/sulu /var/www/html/vendor/sulu/sulu
 COPY webpack.config.js /var/www/html/
 
 RUN npm install

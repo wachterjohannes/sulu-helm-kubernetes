@@ -38,3 +38,12 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "sulu-chart.mysql.fullname" -}}
 {{- printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "sulu-chart.redis.fullname" -}}
+{{- printf "%s-%s" .Release.Name "redis-master" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

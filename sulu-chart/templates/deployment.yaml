@@ -37,6 +37,10 @@ spec:
               value: {{ .Values.sulu.secret }}
             - name: SULU_ADMIN_EMAIL
               value: {{ .Values.sulu.email }}
+            - name: REDIS_HOST
+              value: {{ template "sulu-chart.redis.fullname" . }}
+            - name: REDIS_PASSWORD
+              value: {{ .Values.redis.password | quote }}
             - name: DATABASE_HOST
               value: {{ template "sulu-chart.mysql.fullname" . }}
             - name: DATABASE_PORT
