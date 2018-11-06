@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.sulu.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "sulu.name" . }}
@@ -21,8 +21,8 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.sulu.image.repository }}:{{ .Values.sulu.image.tag }}"
+          imagePullPolicy: {{ .Values.sulu.image.pullPolicy }}
           volumeMounts:
             - name: uploads
               mountPath: /var/www/html/var/uploads
@@ -37,6 +37,8 @@ spec:
               value: {{ .Values.sulu.secret }}
             - name: SULU_ADMIN_EMAIL
               value: {{ .Values.sulu.email }}
+            - name: VARNISH_SERVER
+              value: {{ template "sulu.varnish.fullname" . }}
             - name: REDIS_HOST
               value: {{ template "sulu.redis.fullname" . }}
             - name: REDIS_PASSWORD
@@ -70,24 +72,24 @@ spec:
               path: /
               port: http
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.sulu.resources | indent 12 }}
       volumes:
         - name: uploads
-          {{- if .Values.persistence.enabled }}
+          {{- if .Values.sulu.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "sulu.fullname" .) }}
+            claimName: {{ .Values.sulu.persistence.existingClaim | default (include "sulu.fullname" .) }}
           {{- else }}
           emptyDir: {}
           {{- end -}}
-    {{- with .Values.nodeSelector }}
+    {{- with .Values.sulu.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.affinity }}
+    {{- with .Values.sulu.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.tolerations }}
+    {{- with .Values.sulu.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}

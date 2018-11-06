@@ -1,9 +1,9 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+{{- if and .Values.sulu.persistence.enabled (not .Values.sulu.persistence.existingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "sulu.fullname" . }}
-{{- with .Values.persistence.annotations  }}
+{{- with .Values.sulu.persistence.annotations  }}
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -14,15 +14,15 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   accessModes:
-    - {{ .Values.persistence.accessMode | quote }}
+    - {{ .Values.sulu.persistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.persistence.size | quote }}
-{{- if .Values.persistence.storageClass }}
-{{- if (eq "-" .Values.persistence.storageClass) }}
+      storage: {{ .Values.sulu.persistence.size | quote }}
+{{- if .Values.sulu.persistence.storageClass }}
+{{- if (eq "-" .Values.sulu.persistence.storageClass) }}
   storageClassName: ""
 {{- else }}
-  storageClassName: "{{ .Values.persistence.storageClass }}"
+  storageClassName: "{{ .Values.sulu.persistence.storageClass }}"
 {{- end }}
 {{- end }}
 {{- end }}

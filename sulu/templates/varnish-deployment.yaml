@@ -1,0 +1,51 @@
+{{- if .Values.varnish.enabled }}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "sulu.varnish.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "sulu.name" . }}-varnish
+    helm.sh/chart: {{ include "sulu.chart" . }}-varnish
+    app.kubernetes.io/instance: {{ .Release.Name }}-varnish
+    app.kubernetes.io/managed-by: {{ .Release.Service }}-varnish
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "sulu.name" . }}-varnish
+      app.kubernetes.io/instance: {{ .Release.Name }}-varnish
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "sulu.name" . }}-varnish
+        app.kubernetes.io/instance: {{ .Release.Name }}-varnish
+    spec:
+      volumes:
+      - name: varnish-config
+        configMap:
+          name: {{ template "sulu.varnish.fullname" . }}-config
+          items:
+          - key: default.vcl
+            path: default.vcl
+      containers:
+      - name: {{ .Chart.Name }}-varnish
+        image: "{{ .Values.varnish.image.repository }}:{{ .Values.varnish.image.tag }}"
+        imagePullPolicy: {{ .Values.varnish.image.pullPolicy }}
+        volumeMounts:
+        - name: varnish-config
+          mountPath: /etc/varnish/
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        resources:
+{{ toYaml .Values.varnish.resources | indent 12 }}
+{{- end }}
