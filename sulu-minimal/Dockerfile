@@ -41,10 +41,12 @@ RUN docker-php-ext-install -j$(nproc) \
         zip
 
 RUN pecl install \
-    imagick
+        imagick \
+        redis
 
 RUN docker-php-ext-enable \
-        imagick
+        imagick \
+        redis
 
 # apache config
 RUN /usr/sbin/a2enmod rewrite
