@@ -1,3 +1,6 @@
 *.iml
 .idea
 .DS_STORE
+
+values.yaml
+sulu-*.tgz
