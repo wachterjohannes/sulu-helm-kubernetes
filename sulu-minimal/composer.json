@@ -17,7 +17,7 @@
         "predis/predis": "^1.1",
         "sensio/framework-extra-bundle": "^5.0",
         "snc/redis-bundle": "^2.1",
-        "sulu/sulu": "dev-bugfix/public-cache_lifetime-enhancer",
+        "sulu/sulu": "dev-develop",
         "symfony/config": "^3.4 || ^4.0",
         "symfony/framework-bundle": "^3.4 || ^4.0",
         "symfony/monolog-bridge": "^3.4 || ^4.0",
@@ -83,11 +83,5 @@
     "extra": {
         "symfony-web-dir": "public",
         "symfony-bin-dir": "bin"
-    },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/wachterjohannes/sulu.git"
-        }
-    ]
+    }
 }
