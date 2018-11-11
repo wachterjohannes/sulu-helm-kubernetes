@@ -13,23 +13,35 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "sulu.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+  serviceName: {{ include "sulu.fullname" . }}
   template:
     metadata:
       labels:
         app.kubernetes.io/name: {{ include "sulu.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      volumes:
+        - name: public-uploads
+          emptyDir: {}
+        - name: cache-volume
+          emptyDir: {}
+        - name: log-volume
+          emptyDir: {}
+        - name: indexes-volume
+          emptyDir: {}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.sulu.image.repository }}:{{ .Values.sulu.image.tag }}"
           imagePullPolicy: {{ .Values.sulu.image.pullPolicy }}
           volumeMounts:
-            - name: uploads
-              mountPath: /var/www/html/var/uploads
-              subPath: var/uploads
-            - name: uploads
+            - name: public-uploads
               mountPath: /var/www/html/public/uploads
-              subPath: public/uploads
+            - name: log-volume
+              mountPath: /var/www/html/var/log
+            - name: cache-volume
+              mountPath: /var/www/html/var/cache
+            - name: indexes-volume
+              mountPath: /var/www/html/var/indexes
           env:
             - name: APP_ENV
               value: "prod"
@@ -53,6 +65,8 @@ spec:
               value: {{ .Values.mysql.mysqlUser | quote }}
             - name: DATABASE_PASSWORD
               value: {{ .Values.mysql.mysqlPassword | quote }}
+            - name: GOOGLE_BUCKET
+              value: asapo-test-bucket-1
 #              Secret will be recreated on upgrade
 #              https://github.com/helm/charts/issues/5167
 #              valueFrom:
@@ -73,14 +87,6 @@ spec:
               port: http
           resources:
 {{ toYaml .Values.sulu.resources | indent 12 }}
-      volumes:
-        - name: uploads
-          {{- if .Values.sulu.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.sulu.persistence.existingClaim | default (include "sulu.fullname" .) }}
-          {{- else }}
-          emptyDir: {}
-          {{- end -}}
     {{- with .Values.sulu.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
