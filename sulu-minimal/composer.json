@@ -10,14 +10,17 @@
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/doctrine-cache-bundle": "^1.1",
         "doctrine/doctrine-fixtures-bundle": "~2.4",
+        "guzzlehttp/psr7": "dev-master as 1.5.0",
         "incenteev/composer-parameter-handler": "^2.0",
         "jackalope/jackalope-doctrine-dbal": "^1.2.5",
         "jackalope/jackalope-jackrabbit": "^1.2.0",
+        "league/flysystem": "^1.0",
         "oro/doctrine-extensions": "^1.0",
         "predis/predis": "^1.1",
         "sensio/framework-extra-bundle": "^5.0",
         "snc/redis-bundle": "^2.1",
-        "sulu/sulu": "dev-develop",
+        "sulu/sulu": "dev-feature/google-storage",
+        "superbalist/flysystem-google-storage": "^7.1",
         "symfony/config": "^3.4 || ^4.0",
         "symfony/framework-bundle": "^3.4 || ^4.0",
         "symfony/monolog-bridge": "^3.4 || ^4.0",
@@ -83,5 +86,11 @@
     "extra": {
         "symfony-web-dir": "public",
         "symfony-bin-dir": "bin"
-    }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/wachterjohannes/sulu.git"
+        }
+    ]
 }

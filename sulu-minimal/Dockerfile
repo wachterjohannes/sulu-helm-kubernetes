@@ -55,13 +55,10 @@ RUN /usr/sbin/a2enmod expires
 COPY ./config/container/apache.conf /etc/apache2/sites-available/000-default.conf
 
 # php config
-ADD config/container/memory-limit.ini /usr/local/etc/php/conf.d/memory-limit.ini
+ADD config/container/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # copy needed files from build containers
 COPY --from=yarn /var/www/html/public/admin/build/ /var/www/html/public/admin/build/
 COPY --from=composer /var/www/html/vendor/ /var/www/html/vendor/
 
 COPY . /var/www/html/
-
-# Ensure that cache, log and session directories are writable
-RUN chown -R www-data:www-data /var/www/html/var

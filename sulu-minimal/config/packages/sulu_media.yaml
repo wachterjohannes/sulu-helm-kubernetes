@@ -1,0 +1,6 @@
+sulu_media:
+    storage: google_cloud
+    storages:
+        google_cloud:
+            key_file_path: '%kernel.project_dir%/key.json'
+            bucket: '%env(resolve:GOOGLE_BUCKET)%'
