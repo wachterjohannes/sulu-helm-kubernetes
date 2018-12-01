@@ -21,6 +21,14 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       volumes:
+{{- if .Values.google.enabled }}
+        - name: google-bucket-config
+          configMap:
+              name: {{ template "sulu.fullname" . }}-google-config
+              items:
+              -   key: key.json
+                  path: key.json
+{{- end }}
         - name: public-uploads
           emptyDir: {}
         - name: cache-volume
@@ -34,6 +42,10 @@ spec:
           image: "{{ .Values.sulu.image.repository }}:{{ .Values.sulu.image.tag }}"
           imagePullPolicy: {{ .Values.sulu.image.pullPolicy }}
           volumeMounts:
+{{- if .Values.google.enabled }}
+            - name: google-bucket-config
+              mountPath: /etc/google
+{{- end }}
             - name: public-uploads
               mountPath: /var/www/html/public/uploads
             - name: log-volume
@@ -44,7 +56,7 @@ spec:
               mountPath: /var/www/html/var/indexes
           env:
             - name: APP_ENV
-              value: "prod"
+              value: {{ .Values.sulu.appEnvironment }}
             - name: APP_SECRET
               value: {{ .Values.sulu.secret }}
             - name: SULU_ADMIN_EMAIL
@@ -55,18 +67,14 @@ spec:
               value: {{ template "sulu.redis.fullname" . }}
             - name: REDIS_PASSWORD
               value: {{ .Values.redis.password | quote }}
-            - name: DATABASE_HOST
-              value: {{ template "sulu.mysql.fullname" . }}
-            - name: DATABASE_PORT
-              value: "3306"
-            - name: DATABASE_NAME
-              value: {{ .Values.mysql.mysqlDatabase | quote }}
-            - name: DATABASE_USER
-              value: {{ .Values.mysql.mysqlUser | quote }}
-            - name: DATABASE_PASSWORD
-              value: {{ .Values.mysql.mysqlPassword | quote }}
+            - name: DATABASE_URL
+              value: {{ template "sulu.mysql.url" . }}
+{{- if .Values.google.enabled }}
             - name: GOOGLE_BUCKET
-              value: asapo-test-bucket-1
+              value: {{ .Values.google.bucket }}
+            - name: GOOGLE_KEY_FILE
+              value: /etc/google/key.json
+{{- end }}
 #              Secret will be recreated on upgrade
 #              https://github.com/helm/charts/issues/5167
 #              valueFrom:
